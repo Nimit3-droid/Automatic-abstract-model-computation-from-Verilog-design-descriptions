@@ -1034,3 +1034,4 @@ module txuart(i_clk, i_reset, i_setup, i_break, i_wr, i_data,
 `endif	// FORMAL
 endmodule
 
+

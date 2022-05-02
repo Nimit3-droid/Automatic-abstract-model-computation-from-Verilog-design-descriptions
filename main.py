@@ -12,7 +12,7 @@ temp=0
 
 #<---------------------------------File opening-------------------------------------------->
 #open input file
-f = open("./Inputs/sample_input6.v","r")
+f = open("./Inputs/sample_input7.v","r")
 f = f.read()
 f= f.split('\n')
 #<---------------------------------File opening End-------------------------------------------->
@@ -123,7 +123,7 @@ for statement in f:
 # print(matter)
 new_contents = bracketReplacer(matter)
 # print(new_contents)
-abstracted_model = open("abstracted_model.v",'w')
+abstracted_model = open("./Outputs/abstracted_model7.v",'w')
 
 
 
