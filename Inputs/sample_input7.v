@@ -1,5 +1,3 @@
-
-
 module module_i2c#(
 			//THIS IS USED ONLY LIKE PARAMETER TO BEM CONFIGURABLE
 			parameter integer DWIDTH = 32,
