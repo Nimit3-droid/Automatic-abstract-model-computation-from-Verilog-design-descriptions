@@ -1,8 +1,18 @@
 import copy
 
+#<---------------------------------Global variables----------------------------------------->
+verilog_keyword = "parameter"
+matter = []
+line_word = []
+find = 0
+line_counter = 0
+line_counter = 0
+temp=0
+
+
 #<---------------------------------File opening-------------------------------------------->
 #open input file
-f = open("sample_input7.v","r")
+f = open("./Inputs/sample_input6.v","r")
 f = f.read()
 f= f.split('\n')
 #<---------------------------------File opening End-------------------------------------------->
@@ -23,12 +33,12 @@ def bits(b):
 
 
 #function to remove comment
-def comment_removal(line):
-    return line[:line.index('//')]
+def comment_removal(statement):
+    return statement[:statement.index('//')]
 
 #function to replace brackets
-def bracketReplacer(contents):
-    new_contents = copy.deepcopy(contents)
+def bracketReplacer(matter):
+    new_contents = copy.deepcopy(matter)
     for con in new_contents:
         sentence = con[1]
         if ':' in sentence:
@@ -38,88 +48,99 @@ def bracketReplacer(contents):
             con[1] = sentence
     return new_contents
 
-def line_replacer(find,line):
-    return line.replace(contents[find][1],new_contents[find][1])
+def line_replacer(find,statement):
+    return statement.replace(matter[find][1],new_contents[find][1])
 
 #function to check if a character is a indentation
 def isIndentation(char):
     return char == ' ' or char == '\t'
 
+#function to increment a value
+def increment(x):
+    return x+1
 
+#function to decrement a value
+def decrement(x):
+    return x-1
+
+def initialize():
+    return 0
 
 #<---------------------------------Functions Definition End-------------------------------------------->
 
 
 
 #<---------------------------------abstraction logic-------------------------------------------->
-# Initialization of global variables 
-contents = []
-line_counter = 0
-line_word = []
-for line in f:
-    if '//' in line:
-    #we need to remove the comment if there is any comment at the end of the line
-        line = comment_removal(line)
-        
-    if line.strip() == ' ':
-    #the line is empty
-        line_counter += 1
-        continue
+
+for statement in f:
+    constraints = 0
     bracket_content = ''
-    paranthesis = 0
-    words = line.split(" ")
-    if words[0] == "parameter" :
+    if '//' in statement:
+    #we need to remove the comment if there is any comment at the end of the statement
+        statement = comment_removal(statement)
+     
+    if statement.strip() == ' ':
+    #the statement is empty
+        line_counter = increment(line_counter)
+        continue
+    
+    
+    words = statement.split(" ")
+    if words[0] == verilog_keyword :
         line_word.append(words) 
-
-    #checking further register whose indices to be truncated
-
-    for character in line:
+    paranthesis = 0
+    for character in statement:
         if isIndentation(character):
             continue
         if character == '[' or character == ']':
             paranthesis = (1 if (character == '[') else 0)
 
         elif paranthesis == 1:
-            bracket_content += character
+            bracket_content = bracket_content+character
     
     if bracket_content != '':
-        limits = 0
-        if ':' in bracket_content:
-            limits = bracket_content.split(':')
+        
+        conlonCharacter = ':'
+        if conlonCharacter in bracket_content:
+            constraints = bracket_content.split(conlonCharacter)
 
             #if the index size is variable
-            for k in line_word:
-                if isinstance(limits[0],str):
-                    if k[1] == limits[0][:len(limits[0])-2]:
-                        limits[0] = str(int(k[3])-1)
+            for h in line_word:
+                len_constraint = len(constraints[0])
+                if isinstance(constraints[0],str):
+                    if h[1] == constraints[0][:len_constraint-2]:
+                        constraints[0] = str(int(h[3])-1)
             
-            bracket_content = limits[0] + ":" + ''.join(limits[1:])
+            bracket_content = constraints[0] + ":"
+            bracket_content = bracket_content + ''.join(constraints[1:])
         
         elif bracket_content.isdigit():
             continue
-        contents.append([line_counter,bracket_content])
+        matter.append([line_counter,bracket_content])
 
-    line_counter +=1
+    line_counter = increment(line_counter)
 
-# print(contents)
-new_contents = bracketReplacer(contents)
+# print(matter)
+new_contents = bracketReplacer(matter)
 # print(new_contents)
-abstracted_model = open("newFile.v",'w')
-line_counter = 0
-find = 0
+abstracted_model = open("abstracted_model.v",'w')
+
 
 
 
 #<--------------------------------building new abstracted model------------------------------------->
 
-for line in f:
-    if find < len(contents):
-        if line_counter == contents[find][0]:
-            line = line_replacer(find,line)
-            find+=1
+for statement in f:
+    if find>=len(matter):
+        # move
+        temp=0
+    else:
+        if matter[find][0] == line_counter:
+            statement = line_replacer(find,statement)
+            find = increment(find)
                 
-    line_counter +=1
-    abstracted_model.write(line+'\n')
+    line_counter = increment(line_counter)
+    abstracted_model.write(statement+'\n')
 
 
 #<--------------------------------------------The END------------------------------------------------>
