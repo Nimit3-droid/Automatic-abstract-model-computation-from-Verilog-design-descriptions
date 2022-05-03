@@ -40,7 +40,7 @@ module router(
 		pop_local
 		);
 input [1:0] routeridx,routeridy;
-input [31:0] local_in,north_in,south_in,west_in,east_in;
+input [8:0] local_in,north_in,south_in,west_in,east_in;
 input [2:0] count_in_north;
 input [2:0] count_in_south;
 input [2:0] count_in_east;
@@ -51,25 +51,25 @@ output pop_north,pop_south,pop_east,pop_west,pop_local;
 
 input clk,reset,enable;
 
-output [31:0] local_out,north_out,south_out,west_out,east_out;
+output [8:0] local_out,north_out,south_out,west_out,east_out;
 output [2:0] count_out_north;
 output [2:0] count_out_south;
 output [2:0] count_out_east;
 output [2:0] count_out_west;
 output [2:0] count_out_local;
 
-wire [31:0] local_out,north_out,south_out,west_out,east_out;
+wire [8:0] local_out,north_out,south_out,west_out,east_out;
 wire [2:0] count_out_north;
 wire [2:0] count_out_south;
 wire [2:0] count_out_east;
 wire [2:0] count_out_west;
 wire [2:0] count_out_local;
 
-wire [31:0] north_out_intermediate;
-wire [31:0] south_out_intermediate;
-wire [31:0] east_out_intermediate;
-wire [31:0] west_out_intermediate;
-wire [31:0] local_out_intermediate;
+wire [8:0] north_out_intermediate;
+wire [8:0] south_out_intermediate;
+wire [8:0] east_out_intermediate;
+wire [8:0] west_out_intermediate;
+wire [8:0] local_out_intermediate;
 
 reg pop_north1;
 reg pop_south1;
@@ -91,11 +91,11 @@ assign west_out = muxoutput4;
 assign local_out = muxoutput5;
 
 
-wire [31:0] north_frontdata,north_reardata;
-wire [31:0] south_frontdata,south_reardata;
-wire [31:0] east_frontdata,east_reardata;
-wire [31:0] west_frontdata,west_reardata;
-wire [31:0] local_frontdata,local_reardata;
+wire [8:0] north_frontdata,north_reardata;
+wire [8:0] south_frontdata,south_reardata;
+wire [8:0] east_frontdata,east_reardata;
+wire [8:0] west_frontdata,west_reardata;
+wire [8:0] local_frontdata,local_reardata;
 
 fifo u1(
 .frontdata(north_frontdata),
@@ -368,21 +368,21 @@ always @(posedge clk,nstate1,reset) begin //for north port
 			s0_north:begin
 				x1 = 3'b000;
 				
-				if(north_frontdata[31:30] == 2'b01)begin
+				if(north_frontdata[8:8] == 2'b01)begin
 
 						nstate1 = s1_north;
 
 				end
-				else if(south_frontdata[31:30] == 2'b01)begin
+				else if(south_frontdata[8:8] == 2'b01)begin
 						nstate1 = s2_north;
 				end
-				else if(east_frontdata[31:30] == 2'b01)begin
+				else if(east_frontdata[8:8] == 2'b01)begin
 						nstate1 = s3_north;
 				end
-				else if(west_frontdata[31:30] == 2'b01)begin
+				else if(west_frontdata[8:8] == 2'b01)begin
 						nstate1 = s4_north;
 				end
-				else if(local_frontdata[31:30] == 2'b01)begin
+				else if(local_frontdata[8:8] == 2'b01)begin
 						nstate1 = s5_north;
 				end								
 
@@ -395,20 +395,20 @@ always @(posedge clk,nstate1,reset) begin //for north port
 			s1_north: begin //north
 			
 				if(north_frontdata[31:30] == 2'b01 && (north_frontdata[21:20] > routeridy)
-							&& (north_frontdata[23:22]==routeridx)) begin
+							&& (north_frontdata[8:8]==routeridx)) begin
 					
 					x1 = 3'b001;
 					nstate1 = s1_north;
 				
 				end
 				else if(north_frontdata[31:30] == 2'b01 && (north_frontdata[21:20] <= routeridy)
-							&& (north_frontdata[23:22]==routeridx)) begin
+							&& (north_frontdata[8:8]==routeridx)) begin
 
 					x1 = 3'b000;
 					nstate1 = s2_north;
 				end
 						
-				else if(north_frontdata[31:30] == 2'b11 && count_in_north < 3'b100) begin
+				else if(north_frontdata[8:8] == 2'b11 && count_in_north < 3'b100) begin
 			
 					nstate1 = s6_north;		
 				end
@@ -427,7 +427,7 @@ always @(posedge clk,nstate1,reset) begin //for north port
 			s2_north: begin//south
 			
 				if(south_frontdata[31:30] == 2'b01 && (south_frontdata[21:20] > routeridy)
-								&& (south_frontdata[23:22]==routeridx)) begin
+								&& (south_frontdata[8:8]==routeridx)) begin
 					
 					x1 = 3'b010;
 					nstate1 = s2_north; 
@@ -435,13 +435,13 @@ always @(posedge clk,nstate1,reset) begin //for north port
 								
 				end
 				else if(south_frontdata[31:30] == 2'b01 && (south_frontdata[21:20] <= routeridy)
-								&& (south_frontdata[23:22]==routeridx)) begin
+								&& (south_frontdata[8:8]==routeridx)) begin
 
 					x1 = 3'b000;
 					nstate1 = s3_north;
 				end
 						
-				else if(south_frontdata[31:30] == 2'b11 && count_in_south < 3'b100) begin
+				else if(south_frontdata[8:8] == 2'b11 && count_in_south < 3'b100) begin
 			
 					nstate1 = s6_north; 		
 				end	
@@ -461,7 +461,7 @@ always @(posedge clk,nstate1,reset) begin //for north port
 			s3_north: begin//east
 			
 				if(east_frontdata[31:30] == 2'b01 && (east_frontdata[21:20] > routeridy)
-								&& (east_frontdata[23:22]==routeridx)) begin
+								&& (east_frontdata[8:8]==routeridx)) begin
 					
 					x1 = 3'b011;
 					nstate1 = s3_north;
@@ -469,14 +469,14 @@ always @(posedge clk,nstate1,reset) begin //for north port
 								
 				end
 				else if(east_frontdata[31:30] == 2'b01 && (east_frontdata[21:20] <= routeridy)
-								&& (east_frontdata[23:22]==routeridx)) begin
+								&& (east_frontdata[8:8]==routeridx)) begin
 
 					x1 = 3'b000;
 					nstate1 = s4_north;
 				
 				end
 						
-				else if(east_frontdata[31:30] == 2'b11 && count_in_east < 3'b100) begin
+				else if(east_frontdata[8:8] == 2'b11 && count_in_east < 3'b100) begin
 			
 					nstate1 = s6_north;		
 				end	
@@ -495,7 +495,7 @@ always @(posedge clk,nstate1,reset) begin //for north port
 			s4_north: begin//west
 			
 				if(west_frontdata[31:30] == 2'b01 && (west_frontdata[21:20] > routeridy)
-								&& (west_frontdata[23:22]==routeridx)) begin
+								&& (west_frontdata[8:8]==routeridx)) begin
 					
 					x1 = 3'b100;
 					nstate1 = s4_north;
@@ -503,14 +503,14 @@ always @(posedge clk,nstate1,reset) begin //for north port
 								
 				end
 				else if(west_frontdata[31:30] == 2'b01 && (west_frontdata[21:20] <= routeridy)
-								&& (west_frontdata[23:22]==routeridx)) begin
+								&& (west_frontdata[8:8]==routeridx)) begin
 
 					x1 = 3'b000;	
 					nstate1 = s5_north;
 				
 				end
 						
-				else if(west_frontdata[31:30] == 2'b11 && count_in_west < 3'b100) begin
+				else if(west_frontdata[8:8] == 2'b11 && count_in_west < 3'b100) begin
 			
 					nstate1 = s6_north;		
 				end	
@@ -531,20 +531,20 @@ always @(posedge clk,nstate1,reset) begin //for north port
 			s5_north: begin//local
 			
 				if(local_frontdata[31:30] == 2'b01 && (local_frontdata[21:20] > routeridy)
-								&& (local_frontdata[23:22]==routeridx)) begin
+								&& (local_frontdata[8:8]==routeridx)) begin
 					
 					x1 = 3'b101;
 					nstate1 = s5_north;
 								
 				end
 				else if(local_frontdata[31:30] == 2'b01 && (local_frontdata[21:20] <= routeridy)
-								&& (local_frontdata[23:22]==routeridx)) begin
+								&& (local_frontdata[8:8]==routeridx)) begin
 
 					x1 = 3'b000;
 					nstate1 = s1_north;
 				end
 						
-				else if(local_frontdata[31:30] == 2'b11 && count_in_local < 3'b100) begin
+				else if(local_frontdata[8:8] == 2'b11 && count_in_local < 3'b100) begin
 			
 					nstate1 = s6_north;		
 				end	
@@ -604,8 +604,8 @@ end //always
 
 //------------------------------------------------------north mux----------------------------------------------------
 
-reg [31:0] muxoutput1;//north output
-reg [31:0] nochannel;
+reg [8:0] muxoutput1;//north output
+reg [8:0] nochannel;
 initial begin
 nochannel <= 32'b1;
 end
@@ -656,21 +656,21 @@ always @(posedge clk,nstate2,reset) begin //for south port
 			s0_south:begin
 				x2 = 3'b000;
 				
-				if(north_frontdata[31:30] == 2'b01)begin
+				if(north_frontdata[8:8] == 2'b01)begin
 
 						nstate2 = s1_south;
 
 				end
-				else if(south_frontdata[31:30] == 2'b01) begin
+				else if(south_frontdata[8:8] == 2'b01) begin
 						nstate2 = s2_south;
 				end
-				else if(east_frontdata[31:30] == 2'b01) begin
+				else if(east_frontdata[8:8] == 2'b01) begin
 						nstate2 = s3_south;
 				end
-				else if(west_frontdata[31:30] == 2'b01) begin
+				else if(west_frontdata[8:8] == 2'b01) begin
 						nstate2 = s4_south;
 				end
-				else if(local_frontdata[31:30] == 2'b01) begin
+				else if(local_frontdata[8:8] == 2'b01) begin
 						nstate2 = s5_south;
 				end								
 
@@ -683,19 +683,19 @@ always @(posedge clk,nstate2,reset) begin //for south port
 			s1_south: begin //north
 			
 				if(north_frontdata[31:30] == 2'b01 && (north_frontdata[21:20] < routeridy)
-							&& (north_frontdata[23:22]==routeridx)) begin
+							&& (north_frontdata[8:8]==routeridx)) begin
 					
 					x2 = 3'b001;
 					nstate2 = s1_south;
 				end
 				else if(north_frontdata[31:30] == 2'b01 && (north_frontdata[21:20] >= routeridy)
-							&& (north_frontdata[23:22]==routeridx)) begin
+							&& (north_frontdata[8:8]==routeridx)) begin
 
 					x2 = 3'b000;
 					nstate2 = s2_south;
 				end
 						
-				else if(north_frontdata[31:30] == 2'b11 && count_in_north < 3'b100) begin
+				else if(north_frontdata[8:8] == 2'b11 && count_in_north < 3'b100) begin
 			
 					nstate2 = s6_south;		
 				end
@@ -714,7 +714,7 @@ always @(posedge clk,nstate2,reset) begin //for south port
 			s2_south: begin//south
 			
 				if(south_frontdata[31:30] == 2'b01 && (south_frontdata[21:20] < routeridy)
-								&& (south_frontdata[23:22]==routeridx)) begin
+								&& (south_frontdata[8:8]==routeridx)) begin
 					
 					x2 = 3'b010;
 					nstate2 = s2_south;
@@ -722,14 +722,14 @@ always @(posedge clk,nstate2,reset) begin //for south port
 								
 				end
 				else if(south_frontdata[31:30] == 2'b01 && (south_frontdata[21:20] >= routeridy)
-								&& (south_frontdata[23:22]==routeridx)) begin
+								&& (south_frontdata[8:8]==routeridx)) begin
 
 					x2 = 3'b000;
 					nstate2 = s3_south;
 				
 				end
 						
-				else if(south_frontdata[31:30] == 2'b11 && count_in_south < 3'b100) begin
+				else if(south_frontdata[8:8] == 2'b11 && count_in_south < 3'b100) begin
 			
 					nstate2 = s6_south; 		
 				end	
@@ -749,21 +749,21 @@ always @(posedge clk,nstate2,reset) begin //for south port
 			s3_south: begin//east
 			
 				if(east_frontdata[31:30] == 2'b01 && (east_frontdata[21:20] < routeridy)
-								&& (east_frontdata[23:22]==routeridx)) begin
+								&& (east_frontdata[8:8]==routeridx)) begin
 					
 					x2 = 3'b011;
 					nstate2 = s3_south;
 								
 				end
 				else if(east_frontdata[31:30] == 2'b01 && (east_frontdata[21:20] >= routeridy)
-								&& (east_frontdata[23:22]==routeridx)) begin
+								&& (east_frontdata[8:8]==routeridx)) begin
 
 					x2 = 3'b000;
 					nstate2 = s4_south;
 				
 				end
 						
-				else if(east_frontdata[31:30] == 2'b11 && count_in_east < 3'b100) begin
+				else if(east_frontdata[8:8] == 2'b11 && count_in_east < 3'b100) begin
 			
 					nstate2 = s6_south;		
 				end	
@@ -782,21 +782,21 @@ always @(posedge clk,nstate2,reset) begin //for south port
 			s4_south: begin//west
 			
 				if(west_frontdata[31:30] == 2'b01 && (west_frontdata[21:20] < routeridy)
-								&& (west_frontdata[23:22]==routeridx)) begin
+								&& (west_frontdata[8:8]==routeridx)) begin
 					
 					x2 = 3'b100;
 					nstate2 = s4_south;
 								
 				end
 				else if(west_frontdata[31:30] == 2'b01 && (west_frontdata[21:20] >= routeridy)
-								&& (west_frontdata[23:22]==routeridx)) begin
+								&& (west_frontdata[8:8]==routeridx)) begin
 
 					x2 = 3'b000;
 					nstate2 = s5_south;
 				
 				end
 						
-				else if(west_frontdata[31:30] == 2'b11 && count_in_west < 3'b100) begin
+				else if(west_frontdata[8:8] == 2'b11 && count_in_west < 3'b100) begin
 			
 					nstate2 = s6_south;		
 				end	
@@ -817,20 +817,20 @@ always @(posedge clk,nstate2,reset) begin //for south port
 			s5_south: begin//local
 			
 				if(local_frontdata[31:30] == 2'b01 && (local_frontdata[21:20] < routeridy)
-								&& (local_frontdata[23:22]==routeridx)) begin
+								&& (local_frontdata[8:8]==routeridx)) begin
 					
 					x2 = 3'b101;
 					nstate2 = s5_south;
 								
 				end
 				else if(local_frontdata[31:30] == 2'b01 && (local_frontdata[21:20] >= routeridy)
-								&& (local_frontdata[23:22]==routeridx)) begin
+								&& (local_frontdata[8:8]==routeridx)) begin
 
 					x2 = 3'b000;
 					nstate2 = s1_south;
 				end
 						
-				else if(local_frontdata[31:30] == 2'b11 && count_in_local < 3'b100) begin
+				else if(local_frontdata[8:8] == 2'b11 && count_in_local < 3'b100) begin
 			
 					nstate2 = s6_south;		
 				end	
@@ -891,7 +891,7 @@ end //always
 
 //------------------------------------------------------south mux----------------------------------------------------
 
-reg [31:0] muxoutput2;//south output
+reg [8:0] muxoutput2;//south output
 
 
 
@@ -940,21 +940,21 @@ always @(posedge clk,nstate3,reset) begin //for east port
 			s0_east:begin
 				x3 = 3'b000;
 				
-				if(north_frontdata[31:30] == 2'b01)begin
+				if(north_frontdata[8:8] == 2'b01)begin
 
 						nstate3 = s1_east;
 
 				end
-				else if(south_frontdata[31:30] == 2'b01) begin
+				else if(south_frontdata[8:8] == 2'b01) begin
 						nstate3 = s2_east;
 				end
-				else if(east_frontdata[31:30] == 2'b01) begin
+				else if(east_frontdata[8:8] == 2'b01) begin
 						nstate3 = s3_east;
 				end
-				else if(west_frontdata[31:30] == 2'b01) begin
+				else if(west_frontdata[8:8] == 2'b01) begin
 						nstate3 = s4_east;
 				end
-				else if(local_frontdata[31:30] == 2'b01) begin
+				else if(local_frontdata[8:8] == 2'b01) begin
 						nstate3 = s5_east;
 				end								
 
@@ -978,7 +978,7 @@ always @(posedge clk,nstate3,reset) begin //for east port
 					nstate3 = s2_east;
 				end
 						
-				else if(north_frontdata[31:30] == 2'b11 && count_in_north < 3'b100) begin
+				else if(north_frontdata[8:8] == 2'b11 && count_in_north < 3'b100) begin
 			
 					nstate3 = s6_east;		
 				end
@@ -1008,7 +1008,7 @@ always @(posedge clk,nstate3,reset) begin //for east port
 					nstate3 = s3_east;
 				end
 						
-				else if(south_frontdata[31:30] == 2'b11 && count_in_south < 3'b100) begin
+				else if(south_frontdata[8:8] == 2'b11 && count_in_south < 3'b100) begin
 			
 					nstate3 = s6_east; 		
 				end	
@@ -1039,7 +1039,7 @@ always @(posedge clk,nstate3,reset) begin //for east port
 					nstate3 = s4_east;
 				end
 						
-				else if(east_frontdata[31:30] == 2'b11 && count_in_east < 3'b100) begin
+				else if(east_frontdata[8:8] == 2'b11 && count_in_east < 3'b100) begin
 			
 					nstate3 = s6_east;		
 				end	
@@ -1069,7 +1069,7 @@ always @(posedge clk,nstate3,reset) begin //for east port
 					nstate3 = s5_east;
 				end
 						
-				else if(west_frontdata[31:30] == 2'b11 && count_in_west < 3'b100) begin
+				else if(west_frontdata[8:8] == 2'b11 && count_in_west < 3'b100) begin
 			
 					nstate3 = s6_east;		
 				end	
@@ -1101,7 +1101,7 @@ always @(posedge clk,nstate3,reset) begin //for east port
 					nstate3 = s1_east;
 				end
 						
-				else if(local_frontdata[31:30] == 2'b11 && count_in_local < 3'b100) begin
+				else if(local_frontdata[8:8] == 2'b11 && count_in_local < 3'b100) begin
 			
 					nstate3 = s6_east;		
 				end	
@@ -1163,7 +1163,7 @@ end //always
 
 //------------------------------------------------------east mux----------------------------------------------------
 
-reg [31:0] muxoutput3;//east output
+reg [8:0] muxoutput3;//east output
 
 
 
@@ -1214,21 +1214,21 @@ always @(posedge clk,nstate4,reset) begin //for west port
 		case(nstate4)
 			s0_west:begin
 				x4 = 3'b000;
-				if((north_frontdata[31:30] == 2'b01)) begin
+				if((north_frontdata[8:8] == 2'b01)) begin
 
 						nstate4 = s1_west;
 
 				end
-				else if((south_frontdata[31:30] == 2'b01)) begin
+				else if((south_frontdata[8:8] == 2'b01)) begin
 						nstate4 = s1_west;
 				end
-				else if((east_frontdata[31:30] == 2'b01)) begin
+				else if((east_frontdata[8:8] == 2'b01)) begin
 						nstate4 = s1_west;
 				end
-				else if((west_frontdata[31:30] == 2'b01)) begin
+				else if((west_frontdata[8:8] == 2'b01)) begin
 						nstate4 = s1_west;
 				end
-				else if((local_frontdata[31:30] == 2'b01)) begin
+				else if((local_frontdata[8:8] == 2'b01)) begin
 						nstate4 = s1_west;
 				end
 				
@@ -1249,7 +1249,7 @@ always @(posedge clk,nstate4,reset) begin //for west port
 					nstate4 = s2_west;
 				end
 						
-				else if(north_frontdata[31:30] == 2'b11 && count_in_north < 3'b100) begin
+				else if(north_frontdata[8:8] == 2'b11 && count_in_north < 3'b100) begin
 			
 					nstate4 = s6_west;		
 				end
@@ -1279,7 +1279,7 @@ always @(posedge clk,nstate4,reset) begin //for west port
 					nstate4 = s3_west;
 				end
 						
-				else if(south_frontdata[31:30] == 2'b11 && count_in_south < 3'b100) begin
+				else if(south_frontdata[8:8] == 2'b11 && count_in_south < 3'b100) begin
 			
 					nstate4 = s6_west; 		
 				end	
@@ -1310,7 +1310,7 @@ always @(posedge clk,nstate4,reset) begin //for west port
 					nstate4 = s4_west;
 				end
 						
-				else if(east_frontdata[31:30] == 2'b11 && count_in_east < 3'b100) begin
+				else if(east_frontdata[8:8] == 2'b11 && count_in_east < 3'b100) begin
 			
 					nstate4 = s6_west;		
 				end	
@@ -1340,7 +1340,7 @@ always @(posedge clk,nstate4,reset) begin //for west port
 					nstate4 = s5_west;
 				end
 						
-				else if(west_frontdata[31:30] == 2'b11 && count_in_west < 3'b100) begin
+				else if(west_frontdata[8:8] == 2'b11 && count_in_west < 3'b100) begin
 			
 					nstate4 = s6_west;		
 				end	
@@ -1372,7 +1372,7 @@ always @(posedge clk,nstate4,reset) begin //for west port
 					nstate4 = s1_west;
 				end
 						
-				else if(local_frontdata[31:30] == 2'b11 && count_in_local < 3'b100) begin
+				else if(local_frontdata[8:8] == 2'b11 && count_in_local < 3'b100) begin
 			
 					nstate4 = s6_west;		
 				end	
@@ -1434,7 +1434,7 @@ end //always
 
 
 //-------------------------------------------------west mux----------------------------------------------------
-reg [31:0] muxoutput4;//west output
+reg [8:0] muxoutput4;//west output
 
 always @( 
 		north_out_intermediate,
@@ -1487,25 +1487,25 @@ always @(posedge clk,nstate5,reset) begin //for local port
 			s0_local:begin
 				x5 = 3'b000;
 				if((north_frontdata[31:30] == 2'b01) && (north_frontdata[21:20]==routeridy) && 
-									(north_frontdata[23:22]==routeridx)) begin
+									(north_frontdata[8:8]==routeridx)) begin
 
 						nstate5 = s1_local;
 
 				end
 				else if((south_frontdata[31:30] == 2'b01) && (south_frontdata[21:20]==routeridy) &&
-									(south_frontdata[23:22]==routeridx)) begin
+									(south_frontdata[8:8]==routeridx)) begin
 						nstate5 = s1_local;
 				end
 				else if((east_frontdata[31:30] == 2'b01) && (east_frontdata[21:20]==routeridy) && 
-									(east_frontdata[23:22]==routeridx)) begin
+									(east_frontdata[8:8]==routeridx)) begin
 						nstate5 = s1_local;
 				end
 				else if((west_frontdata[31:30] == 2'b01) && (west_frontdata[21:20] == routeridy) && 
-									(west_frontdata[23:22]==routeridx)) begin
+									(west_frontdata[8:8]==routeridx)) begin
 						nstate5 = s1_local;
 				end
 				else if((local_frontdata[31:30] == 2'b01) && (local_frontdata[21:20]==routeridy) && 
-									(local_frontdata[23:22]==routeridx)) begin
+									(local_frontdata[8:8]==routeridx)) begin
 						nstate5 = s1_local;
 				end
 				
@@ -1516,19 +1516,19 @@ always @(posedge clk,nstate5,reset) begin //for local port
 			s1_local: begin //north
 			
 				if(north_frontdata[31:30] == 2'b01 && (north_frontdata[21:20] == routeridy) &&
-					(north_frontdata[23:22]==routeridx)) begin
+					(north_frontdata[8:8]==routeridx)) begin
 					
 					x5 = 3'b001;
 					nstate5 = s1_local;
 				end
 				else if(north_frontdata[31:30] == 2'b01 && (north_frontdata[21:20] == routeridy)
-						&& (north_frontdata[23:22]==routeridx)) begin
+						&& (north_frontdata[8:8]==routeridx)) begin
 
 					x5 = 3'b000;
 					nstate5 = s2_local;
 				end
 						
-				else if(north_frontdata[31:30] == 2'b11 && count_in_north < 3'b100) begin
+				else if(north_frontdata[8:8] == 2'b11 && count_in_north < 3'b100) begin
 			
 					nstate5 = s6_local;		
 				end
@@ -1547,20 +1547,20 @@ always @(posedge clk,nstate5,reset) begin //for local port
 			s2_local: begin//south
 			
 				if(south_frontdata[31:30] == 2'b01 && (south_frontdata[21:20] == routeridy)
-					&& (south_frontdata[23:22]==routeridx)) begin
+					&& (south_frontdata[8:8]==routeridx)) begin
 					
 					x5 = 3'b010;
 					nstate5 = s2_local;
 								
 				end
 				else if(south_frontdata[31:30] == 2'b01 && (south_frontdata[21:20] == routeridy)
-					&& (south_frontdata[23:22]==routeridx)) begin
+					&& (south_frontdata[8:8]==routeridx)) begin
 
 					x5 = 3'b000;
 					nstate5 = s3_local;
 				end
 						
-				else if(south_frontdata[31:30] == 2'b11 && count_in_south < 3'b100) begin
+				else if(south_frontdata[8:8] == 2'b11 && count_in_south < 3'b100) begin
 			
 					nstate5 = s6_local; 		
 				end	
@@ -1580,20 +1580,20 @@ always @(posedge clk,nstate5,reset) begin //for local port
 			s3_local: begin//east
 			
 				if(east_frontdata[31:30] == 2'b01 && (east_frontdata[21:20] == routeridy)
-					    &&	(east_frontdata[23:22]==routeridx)) begin
+					    &&	(east_frontdata[8:8]==routeridx)) begin
 					
 					x5 = 3'b011;
 					nstate5 = s3_local;
 								
 				end
 				else if(east_frontdata[31:30] == 2'b01 && (east_frontdata[21:20] == routeridy)
-					&& (east_frontdata[23:22]==routeridx)) begin
+					&& (east_frontdata[8:8]==routeridx)) begin
 
 					x5 = 3'b000;
 					nstate5 = s4_local;
 				end
 						
-				else if(east_frontdata[31:30] == 2'b11 && count_in_east < 3'b100) begin
+				else if(east_frontdata[8:8] == 2'b11 && count_in_east < 3'b100) begin
 			
 					nstate5 = s6_local;		
 				end	
@@ -1612,20 +1612,20 @@ always @(posedge clk,nstate5,reset) begin //for local port
 			s4_local: begin//west
 			
 				if(west_frontdata[31:30] == 2'b01 && (west_frontdata[21:20] == routeridy)
-						&& (west_frontdata[23:22]==routeridx)) begin
+						&& (west_frontdata[8:8]==routeridx)) begin
 					
 					x5 = 3'b100;
 					nstate5 = s4_local;
 								
 				end
 				else if(west_frontdata[31:30] == 2'b01 && (west_frontdata[21:20] == routeridy)
-						&& (west_frontdata[23:22]==routeridx)) begin
+						&& (west_frontdata[8:8]==routeridx)) begin
 
 					x5 = 3'b000;
 					nstate5 = s5_local;
 				end
 						
-				else if(west_frontdata[31:30] == 2'b11 && count_in_west < 3'b100) begin
+				else if(west_frontdata[8:8] == 2'b11 && count_in_west < 3'b100) begin
 			
 					nstate5 = s6_local;		
 				end	
@@ -1646,20 +1646,20 @@ always @(posedge clk,nstate5,reset) begin //for local port
 			s5_local: begin//local
 			
 				if(local_frontdata[31:30] == 2'b01 && (local_frontdata[21:20] == routeridy)
-						&& (local_frontdata[23:22]==routeridx)) begin
+						&& (local_frontdata[8:8]==routeridx)) begin
 					
 					x5 = 3'b101;
 					nstate5 = s5_local;
 								
 				end
 				else if(local_frontdata[31:30] == 2'b01 && (local_frontdata[21:20] == routeridy)
-							&& (local_frontdata[23:22]==routeridx)) begin
+							&& (local_frontdata[8:8]==routeridx)) begin
 
 					x5 = 3'b000;
 					nstate5 = s1_local;
 				end
 						
-				else if(local_frontdata[31:30] == 2'b11 && count_in_local < 3'b100) begin
+				else if(local_frontdata[8:8] == 2'b11 && count_in_local < 3'b100) begin
 			
 					nstate5 = s6_local;		
 				end	
@@ -1721,7 +1721,7 @@ end //always
 
 
 //-------------------------------------------------local mux----------------------------------------------------
-reg [31:0] muxoutput5;//local output
+reg [8:0] muxoutput5;//local output
 
 always @( 
 		north_out_intermediate,

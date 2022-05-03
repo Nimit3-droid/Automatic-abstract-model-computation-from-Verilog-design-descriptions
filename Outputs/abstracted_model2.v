@@ -1,9 +1,9 @@
 
 module	liftcontroller(start,clk,reset_inside_button,reset_up,reset_down,up_button,down_button,inside_button,present_floor); 
 	input start,clk;
-	input [6:0] up_button,down_button,inside_button;
-	output [6:0] reset_inside_button,reset_up,reset_down,present_floor;
-	reg [6:0] reset_inside_button,reset_up,reset_down,present_floor;
+	input [4:0] up_button,down_button,inside_button;
+	output [4:0] reset_inside_button,reset_up,reset_down,present_floor;
+	reg [4:0] reset_inside_button,reset_up,reset_down,present_floor;
 	reg dir_up;
 	reg [4:0] nstate;
       	parameter 	s0_idle=0,s0_up=1,door_0=2,s1_idle=3,s1_up=4,s1_down=5,

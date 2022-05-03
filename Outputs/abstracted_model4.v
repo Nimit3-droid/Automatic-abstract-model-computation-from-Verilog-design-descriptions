@@ -19,7 +19,7 @@ module usbf_pa(	clk, rst,
 input		clk, rst;
 
 // UTMI TX Interface
-output	[7:0]	tx_data;
+output	[4:0]	tx_data;
 output		tx_valid;
 output		tx_valid_last;
 input		tx_ready;
@@ -33,7 +33,7 @@ input	[1:0]	data_pid_sel;
 input		send_zero_length;
 
 // IDMA Interface
-input	[7:0]	tx_data_st;
+input	[4:0]	tx_data_st;
 output		rd_next;
 
 ///////////////////////////////////////////////////////////////////
@@ -54,20 +54,20 @@ reg	[4:0]	/* synopsys enum state */ state, next_state;
 reg		last;
 reg		rd_next;
 
-reg	[7:0]	token_pid, data_pid;	// PIDs from selectors
-reg	[7:0]	tx_data_d;
-reg	[7:0]	tx_data_data;
+reg	[4:0]	token_pid, data_pid;	// PIDs from selectors
+reg	[4:0]	tx_data_d;
+reg	[4:0]	tx_data_data;
 reg		dsel;
 reg		tx_valid_d;
 reg		send_token_r;
-reg	[7:0]	tx_spec_data;
+reg	[4:0]	tx_spec_data;
 reg		crc_sel1, crc_sel2;
 reg		tx_first_r;
 reg		send_data_r;
 wire		crc16_clr;
-reg	[15:0]	crc16;
-wire	[15:0]	crc16_next;
-wire	[15:0]	crc16_rev;
+reg	[4:0]	crc16;
+wire	[4:0]	crc16_next;
+wire	[4:0]	crc16_rev;
 wire		crc16_add;
 reg		send_data_r2;
 reg		tx_valid_r;
@@ -141,8 +141,8 @@ always @(dsel or tx_data_st or tx_spec_data)
 always @(crc_sel1 or crc_sel2 or data_pid or crc16_rev)
 	if(!crc_sel1 && !crc_sel2)	tx_spec_data = data_pid;
 	else
-	if(crc_sel1)			tx_spec_data = crc16_rev[15:8];	// CRC 1
-	else				tx_spec_data = crc16_rev[7:0];	// CRC 2
+	if(crc_sel1)			tx_spec_data = crc16_rev[4:4];	// CRC 1
+	else				tx_spec_data = crc16_rev[4:0];	// CRC 2
 
 assign tx_data = tx_data_d;
 

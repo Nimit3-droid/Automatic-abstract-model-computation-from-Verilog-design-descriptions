@@ -3,25 +3,25 @@
 
 module rlencoding(data_in,data_in_valid,fast_clk,data_clk,reset,data_out,data_out_valid,read_signal,write_signal,readptr,writeptr,output1,data_clk1);
 		
-	input [7:0] data_in;
+	input [4:0] data_in;
 	input read_signal,write_signal,fast_clk,data_clk,data_in_valid,reset,data_clk1;
-	output reg [7:0] data_out;
+	output reg [4:0] data_out;
 	output data_out_valid;
-	output [7:0] readptr,writeptr;
+	output [4:0] readptr,writeptr;
 	output [2:0] output1;
 	
 	reg [7:0] buffer [0:255];
-	reg [7:0] count;
-	reg [7:0] bufferoutput;
-	reg [7:0] readptr;
-	reg [7:0] writeptr;
+	reg [4:0] count;
+	reg [4:0] bufferoutput;
+	reg [4:0] readptr;
+	reg [4:0] writeptr;
 	reg [1:0] nstate;
-	reg [7:0] datacount;
+	reg [4:0] datacount;
 	reg [2:0] output1;
 	reg equal_or_not;
-	reg [7:0] buffer1;
-	reg [7:0] buffer2;
-	reg [7:0] buffer3;
+	reg [4:0] buffer1;
+	reg [4:0] buffer2;
+	reg [4:0] buffer3;
 	reg flag1;
 	reg flag2;
 	reg flag3;
