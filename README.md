@@ -1,5 +1,14 @@
 # Automatic-abstract-model-computation-from-Verilog-design-descriptions
 
+## What is abstraction?
+it is process of hiding implementation details and 
+only showing the functionality to the user. 
+Abstraction focus on what the object does instead of how it does. 
+It is achieved by using Abstract class and Interface. 
+abstract methods (methods without body, cannot be static and final), 
+interface must implemented and abstract classes must be extended 
+by regular classes in order to achieve abstraction 
+
 ## Why is Abstraction necessary?
 Due to the complexity of life, abstraction is necessary. Complex systems must be simplified for people to understand and use them. 
 To understand this in simple form. Let us take an example of 8-Bit Counter.
